@@ -32,16 +32,16 @@ class NewFileHandler(FileSystemEventHandler):
             print(">>> Input command: " + json_data['var_command'])          #입력된 명령어
             print("==============================================\n")
             if tfCreate == 'apply':             #Make VMs
-                fileCopy(tf_cmd['var_sampleFile_tf'], tf_cmd['var_testFile_tf'])
+                shutil.copy(tf_cmd['var_sampleFile_tf'], tf_cmd['var_testFile_tf'])
                 tfchange(tf_cmd['var_testFile_tf'])
                 RunTerraform.exeTerraformbyPython('init')               #Terraform commands: tf.init, tf.plan, tf.apply, tf.destroy
                 RunTerraform.exeTerraformbyPython('plan')
                 RunTerraform.exeTerraformbyPython('apply')
-                fileMove(tf_cmd['var_cmdFolder'], tf_cmd['var_cmdMove'])
+                shutil.move(tf_cmd['var_cmdFolder'], tf_cmd['var_cmdMove'])
             elif tfCreate == 'destroy':
                 RunTerraform.exeTerraformbyPython('init')               #Terraform commands: tf.init, tf.plan, tf.apply, tf.destroy
                 RunTerraform.exeTerraformbyPython('destroy')
-                fileMove(tf_cmd['var_cmdFolder'], tf_cmd['var_cmdMove'])
+                shutil.move(tf_cmd['var_cmdFolder'], tf_cmd['var_cmdMove'])
                 
     def on_deleted(self, event):                                    ##해당 폴더에 파일 삭제(delete)
         if not event.is_directory:
@@ -87,13 +87,6 @@ def tfchange(file_path):
  
     # File modification example usage
     jsonfilemodify.change_strings_in_file(file_path, replacements)
-    
-def fileCopy(srcFile, dstFile):
-    shutil.copy(srcFile, dstFile)  
-    
-def fileMove(srcFile, dstFile):
-    shutil.move(srcFile, dstFile)      
-
 
 if __name__ == "__main__":
     tf_cmd = jsonfile.read_json_file('D:/00.tmp/03.jsonFile/public_variables.json')     #프로그램에 사용할 전역변수
